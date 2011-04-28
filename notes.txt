@@ -1,0 +1,13 @@
+If you can't create a prototype in a week, your idea is too complicated.
+
+feature detection for CSS animations -- typeof document.body.webkitAnimation == "undefined" 
+
+requestAnimationFrame fires at a fixed FPS
+
+The X in AJAX is for JSON, the P in LAMP is for Ruby.
+
+Socket.IO - great for communication
+
+client-client communication - every client is also a server, http://easywebsocket.org/ for easy client to client communication
+
+facebook API changes all the time

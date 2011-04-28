@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+	<title>Checkers</title>
+	
+	<style>
+		.checkers {
+			border: 15px solid #ccc;
+			border-spacing: 0;
+			table-layout: fixed;
+		}
+		
+		.checkers td {
+			text-align: center;
+			width: 59px;
+			height: 59px;
+			padding: 2px;
+			vertical-align: center;
+			overflow: hidden;
+		}
+		
+		.checkers div {
+			display: inline-block;
+			width: 45px;
+			height: 54px;
+		}
+		
+		@-webkit-keyframes yoshi {
+				0% { background-position: 0 0; }
+				24.99% { background-position: 0 0; }
+				25% { background-position: 0 -54px; }
+				49.99% { background-position: 0 -54px; }
+				50% { background-position: 0 -108px; }
+				74.99% { background-position: 0 -108px; }
+				75% { background-position: 0 -162px; }
+				100% { background-position: 0 -162px; }
+		}
+		
+		.k0 .yoshi { background-position: 0 0; } 
+		.k25 .yoshi { background-position: 0 -54px; } 
+		.k50 .yoshi { background-position: 0 -108px; } 
+		.k75 .yoshi { background-position: 0 -162px; } 
+		
+		.yoshi {
+			background: url('yoshi.png');
+			-webkit-animation: yoshi .5s infinite;
+		}
+		
+		
+		@-webkit-keyframes kong {
+				0% { background-position: 0 0; }
+				24.99% { background-position: 0 0; }
+				25% { background-position: 0 -54px; }
+				49.99% { background-position: 0 -54px; }
+				50% { background-position: 0 -108px; }
+				74.99% { background-position: 0 -108px; }
+				75% { background-position: 0 -162px; }
+				100% { background-position: 0 -162px; }
+		}
+		
+		.k0 .kong { background-position: 0 0; } 
+		.k25 .kong { background-position: 0 -54px; } 
+		.k50 .kong { background-position: 0 -108px; } 
+		.k75 .kong { background-position: 0 -162px; } 
+		
+		.kong {
+			background: url('kong.png');
+			-webkit-animation: kong .5s infinite;
+		}
+		
+		.checkers .black {
+			background-color: #000;
+		}
+	</style>
+	
+	<script src="stringBuilder.js"></script>
+	
+	<script>
+		function $(id) {
+			return document.getElementById(id);
+		}
+		
+		var config = {
+			rows: 8,
+			cols: 8,
+			checkerSize: 59
+		};
+		
+		function Checker(type) {
+			var canvas = this.canvas = document.createElement('div');
+			
+			canvas.className = type;
+		}
+		
+		Checker.prototype = {
+			draw: function() {
+				
+			}
+		};
+		
+		window.onload = function() {
+			var html = new stringBuilder();
+			
+			html.cat("<table id='checkerBoard' class='checkers'>");
+			
+			for (var i = 0; i < config.rows; i++) {
+			
+				html.cat("<tr>");
+				
+				for (var j = 0; j < config.cols; j++) {
+					html.cat("<td")
+						.catIf(" class='black'", (i%2) ^ (j%2))
+						.cat("></td>");
+				}
+				
+				html.cat("</tr>");
+			}
+			
+			html.cat("</table>");
+			
+			document.body.innerHTML = html.string();
+			
+			var board = $('checkerBoard');
+			var cells = document.getElementsByTagName('td');
+			
+			for (var row = 0; row < config.rows; row++) {
+				for (var cell = 0; cell < config.cols; cell++) {
+					var currentCell = cells[row * config.rows + cell];
+					
+					if (currentCell.className == 'black' || (row >= 3 && row < 5))
+						continue;
+						
+					var color = row < 3 ? 'yoshi' : 'kong';
+					
+					var checker = new Checker(color);
+					
+					currentCell.appendChild(checker.canvas);
+					
+					checker.draw();
+				}
+			}
+			
+			if (typeof document.body.webkitAnimation == "undefined") {
+				var keyframes = 'k0,k25,k50,k75'.split(',');
+				var currentKeyFrame = 0;
+				
+				var i = 0;
+				
+				function render() {
+                    if (i++ % 6 == 0) {
+    					currentKeyFrame = (currentKeyFrame+1)% keyframes.length;
+	    				document.body.className = keyframes[currentKeyFrame];
+                    }
+				}
+				
+				// shim layer with setTimeout fallback
+				window.requestAnimFrame = (function(){
+					return  window.requestAnimationFrame       || 
+							window.webkitRequestAnimationFrame || 
+							window.mozRequestAnimationFrame    || 
+							window.oRequestAnimationFrame      || 
+							window.msRequestAnimationFrame     || 
+							function(/* function */ callback, /* DOMElement */ element){
+								window.setTimeout(callback, 1000 / 60);
+							};
+				})();
+			 
+				(function(){
+					render();
+					requestAnimFrame(arguments.callee);
+				})();
+			}
+		};
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
